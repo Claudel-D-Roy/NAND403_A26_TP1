@@ -3,6 +3,8 @@ import sys
 from PySide6.QtWidgets import QApplication, QHBoxLayout, QLabel, QLineEdit, QMessageBox, QTableWidget, QTableWidgetItem, QPushButton, QVBoxLayout, QWidget
 from PySide6.QtCore import Qt
 
+#Toute mettre dans des def !! 
+
 #fonction pour charger le fichier json, exception et fermeture du fichier après lecture. 
 def load_json_file(file_path):
 
