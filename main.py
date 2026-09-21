@@ -73,9 +73,9 @@ def create_table(data):
 
     #Itère sur les données du fichier json pour remplir la table avec les bonnes valeurs
     #for loop, enumerate pour avoir l'index de la row et de la colums, items pour avoir les keys et values du fichier json
-    for row_index, row_data in enumerate(data): #Row
-        for col_index, (key, value) in enumerate(row_data.items()): #Colonne .item() veux dier enumrer les items a cette row la
-            table.setItem(row_index, col_index, QTableWidgetItem(str(value))) #Value
+    for row_index, row_data in enumerate(data): #Row row_index est le num ex row 0 et row_data est tous se qui a dans cette object la, donc le id, le nom ect.. en plus des données
+        for col_index, (key, value) in enumerate(row_data.items()): #Colonne .item() veux dier enumurer les items a cette row la. key est ex id et value est ex NAND403-001
+            table.setItem(row_index, col_index, QTableWidgetItem(str(value))) #Value trouver ex NAND403-001
             #QTableWigetItem prend en paramètre un string, donc convertir la value en string pour éviter les erreurs
 
 
