@@ -37,9 +37,9 @@ def load_json(file_path):
 #-------------------variable----------------------------
 print("Veuillez écrire le chemin pour un fichier json : ")
 filename = input()
-#Met le contenu du fichier json dans la variable
 data = load_json(filename)
-file_split = filename.split(".")[-2].split("\\")[-1]  # Récupère le nom du fichier sans l'extension et le chemin le . signal de de couper au point et \\ signifier de couper au \\
+file_split = filename.split(".")[-2].split("\\")[-1]  
+# Récupère le nom du fichier sans l'extension et le chemin le . signal de de couper au point et \\ signifier de couper au \\
 #-------------------------------------------------------
 
 
@@ -47,9 +47,6 @@ file_split = filename.split(".")[-2].split("\\")[-1]  # Récupère le nom du fic
 # #Crée la fenetre 
 def create_window():
    
-    #Crée les boutons pour trier les données du fichier json
-    sort_ascending = QPushButton("Tri Ascendant")
-    sort_descending = QPushButton("Tri Descendant")
     #Barre de recherche et le texte de base 
     search_bar = QLineEdit()
     search_bar.setPlaceholderText("Recherche...")
@@ -57,11 +54,10 @@ def create_window():
     #Affiche un label et je set le texte que je veux dedans
     display_box = QLabel()
     display_box.setText(f"Nom du fichier: {file_split}\nTaille en mémoire: {sys.getsizeof(data)} bytes\nNombre d'éléments: {len(data)}") 
+
     #Layout du container
     layout_v = QVBoxLayout(container) #Vertical 
-    layout_h = QHBoxLayout() #Horizontal
-    layout_h.addWidget(sort_ascending)  #add sort_ascending au layout_h
-    layout_h.addWidget(sort_descending) #add sort_descending au layout_h    
+    layout_h = QHBoxLayout() #Horizontal   
     layout_v.addLayout(layout_h) #add layout_h au layout_v
     layout_v.addWidget(search_bar) #add search_bar au layout_v
     layout_v.addWidget(table) #add table au layout_v
@@ -69,23 +65,21 @@ def create_window():
     container.setLayout(layout_v) #Set le layout pour le container
 
     #Appel la fonction pour ouvrir la fenêtre avec les données du fichier json
-    create_table(data, sort_ascending, sort_descending, search_bar)  
+    create_table(data, search_bar)  
 #-------------------------------------------------------
  
 
 #---------------------Tableau---------------------------
 #Fonction pour mettre les données du fichier json dans la table, fait la gestion du tri et de la recherche
-def create_table(data, sort_ascending, sort_descending, search_bar):
+def create_table(data, search_bar):
 
     #Connecte les boutons au def que je veux. Lambda = methode anonyme 
     #J'ai fais un lambda car je veux que le code s'exécute quand on appuie sur le bouton et pas tout de suite.
-    sort_ascending.clicked.connect(lambda: sort_table("Croissant"))
-    sort_descending.clicked.connect(lambda: sort_table("Décroissant"))
     search_bar.textChanged.connect(lambda text: search_table(text)) 
     #text parce que lambda a besoin d'un paramètre, sa aurait pu être banane
 
     #Va chercher les headers unique car c'est possible que les headers soit différent
-    unique_headers = {}
+    unique_headers = {} #dictionnaire, va faire ( key, " ") une fois le nested loop va être fini
     for row in data: 
         for key in row.keys():
             unique_headers[key] = None #Viens créer la place vide pour les headers
@@ -102,19 +96,18 @@ def create_table(data, sort_ascending, sort_descending, search_bar):
     #for loop, enumerate pour avoir l'index de la row et de la colums, items pour avoir les keys et values du fichier json
     for row_index, row_data in enumerate(data): #Row row_index est le num ex row 0 et row_data est tous se qui a dans cette object la, donc le id, le nom ect.. en plus des données
         for col_index, header in enumerate(headers_list): #Viens énuméré en fonction des headers
+            
             value = row_data.get(header, "") #viens voir si une donnée est associée au header, sinon met ""
-            table.setItem(row_index, col_index, QTableWidgetItem(str(value))) #Value trouver ex NAND403-001
-            #QTableWigetItem prend en paramètre un string, donc convertir la value en string pour éviter les erreurs
-#-------------------------------------------------------
 
+            if isinstance(value, int): #Regarde si la value est in int
+                item = QTableWidgetItem(value) #ajoute l'item
+                item.setData(Qt.ItemDataRole.DisplayRole, value) #DisplayRole fait en sort que sa soit display en text, setData(role, valeur)
+            else:
+                item = QTableWidgetItem(str(value)) #QTableWigetItem prend en paramètre un string, donc convertir la value en string pour éviter les erreurs
+           
+            table.setItem(row_index, col_index, item) #item trouver ex NAND403-001
 
-#----------------------Tri------------------------------
-#Fonction de tri
-def sort_table(type):
- if type == "Croissant":
-   table.sortItems(0, Qt.AscendingOrder) #0 pour la première colonne, Qt.AscendingOrder pour trier en ordre croissant
- elif type == "Décroissant":
-     table.sortItems(0, Qt.DescendingOrder) #0 pour la première colonne, Qt.DescendingOrder pour trier en ordre décroissant
+    table.setSortingEnabled(True) #tri ma table en fonction de la colonne que le user a choisi
 #-------------------------------------------------------
 
 #----------------------Recherche------------------------
@@ -133,7 +126,6 @@ def search_table(search_text):
 
 
 #---------------------Appel-----------------------------
-#Appel la fenetre
 create_window()
 #-------------------------------------------------------
 
