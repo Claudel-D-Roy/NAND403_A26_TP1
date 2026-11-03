@@ -39,7 +39,7 @@ def load_json(file_path):
 print("Veuillez écrire le chemin pour un fichier json : ")
 filename = input()
 data = load_json(filename)
-file_split = filename.split(".")[-2].split("\\")[-1]  
+Path(filename).name
 # Récupère le nom du fichier sans l'extension et le chemin le . signal de de couper au point et \\ signifier de couper au \\
 #-------------------------------------------------------
 
